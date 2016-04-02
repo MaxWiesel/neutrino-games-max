@@ -47,9 +47,14 @@ extern	int				doexit;
 
 void	FBSetColor( int idx, uchar r, uchar g, uchar b )
 {
+#ifdef BOXMODEL_APOLLO
+	red[idx] = b<<8;
+	blue[idx] = r<<8;
+#else
 	red[idx] = r<<8;
-	green[idx] = g<<8;
 	blue[idx] = b<<8;
+#endif
+	green[idx] = g<<8;
 	trans[idx] = idx ? 0 : 0xffff;
 
 	if ( idx > lastcolor )
@@ -108,7 +113,11 @@ int	FBInitialize( int xRes, int yRes, int nbpp, int extfd )
 	memset(red,100,sizeof(unsigned short)*256);
 	memset(green,100,sizeof(unsigned short)*256);
 	memset(blue,100,sizeof(unsigned short)*256);
+#ifdef BOXMODEL_APOLLO
+	memset(trans,0xff,sizeof(unsigned short)*256);
+#else
 	memset(trans,0xffff,sizeof(unsigned short)*256);
+#endif
 
 	if (ioctl(fbdevice, FBIOPUT_VSCREENINFO, &screeninfo)<0)
 		perror("FBSetMode");
