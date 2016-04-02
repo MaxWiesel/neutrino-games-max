@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-//#include <config.h>
 
 #ifdef HAVE_TRIPLEDRAGON
 // ugly, but works
@@ -42,24 +41,24 @@ void Fx2PigResume(void)
 }
 #else // !TRIPLEDRAGON
 
-static 	int		fd = -1;
-	int		fx2_use_pig = 1;
-static	int		l_x = 0;
-static	int		l_y = 0;
-static	int		l_width = 0;
-static	int		l_height = 0;
+static 	int	fd = -1;
+int		fx2_use_pig = 1;
+static	int	l_x = 0;
+static	int	l_y = 0;
+static	int	l_width = 0;
+static	int	l_height = 0;
 #ifndef i386
 
 #if defined HAVE_DREAMBOX_HARDWARE || defined HAVE_IPBOX_HARDWARE
-	#include <dbox/avia_gt_pig.h>
-	#define PIGDEV "/dev/dbox/pig0"
-	extern FBFillRect( int x, int y, int dx, int dy, unsigned char col );
+#include <dbox/avia_gt_pig.h>
+#define PIGDEV "/dev/dbox/pig0"
+extern FBFillRect( int x, int y, int dx, int dy, unsigned char col );
 #else
-	//Narf ... sucks
-	#define _LINUX_TIME_H
-	#define PIGDEV "/dev/v4l/video0"
-	#include <linux/videodev.h>
-	static	struct v4l2_format format;
+//Narf ... sucks
+#define _LINUX_TIME_H
+#define PIGDEV "/dev/v4l/video0"
+#include <linux/videodev.h>
+static	struct v4l2_format format;
 #endif
 
 void	Fx2SetPig( int x, int y, int width, int height )
@@ -73,22 +72,22 @@ void	Fx2SetPig( int x, int y, int width, int height )
 
 #ifdef HAVE_DBOX_HARDWARE
 	if (( x == format.fmt.win.w.left ) && ( y == format.fmt.win.w.top ) &&
-		( width == format.fmt.win.w.width ) && ( height == format.fmt.win.w.height ))
-			return;
-	
+			( width == format.fmt.win.w.width ) && ( height == format.fmt.win.w.height ))
+		return;
+
 	overlay = 0;
-	
+
 	ioctl(fd, VIDIOC_OVERLAY, &overlay);
-	
+
 	format.fmt.win.w.left=x;
 	format.fmt.win.w.top=y;
 	format.fmt.win.w.width=width;
 	format.fmt.win.w.height=height;
-	
+
 	ioctl(fd, VIDIOC_S_FMT, &format);
-	
+
 	overlay = 1;
-	
+
 	ioctl(fd, VIDIOC_OVERLAY, &overlay);
 #else
 	avia_pig_hide(fd);
@@ -108,8 +107,7 @@ void	Fx2ShowPig( int x, int y, int width, int height )
 #ifdef HAVE_DBOX_HARDWARE
 	int overlay;
 #endif
-	if ( fd != -1 )
-	{
+	if ( fd != -1 ) {
 		Fx2SetPig(x,y,width,height);
 #if defined HAVE_DREAMBOX_HARDWARE || defined HAVE_IPBOX_HARDWARE
 		l_x=x;
@@ -119,10 +117,10 @@ void	Fx2ShowPig( int x, int y, int width, int height )
 #endif
 		return;
 	}
-	
+
 	if (( fd == -1 ) && fx2_use_pig )
 		fd = open( PIGDEV, O_RDONLY );
-	
+
 	if ( fd == -1 )
 		return;
 
@@ -133,13 +131,13 @@ void	Fx2ShowPig( int x, int y, int width, int height )
 	format.fmt.win.w.top=y;
 	format.fmt.win.w.width=width;
 	format.fmt.win.w.height=height;
-	
+
 	ioctl(fd, VIDIOC_S_FMT, &format);
-	
+
 //FIXME	avia_pig_set_stack(fd,2);
-	
+
 	overlay = 1;
-	
+
 	ioctl(fd, VIDIOC_OVERLAY, &overlay);
 #else
 	FBFillRect( x, y, width, height, 0 ); // fill transp for dreambox

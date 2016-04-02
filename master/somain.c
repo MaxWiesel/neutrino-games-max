@@ -33,19 +33,19 @@
 #include "pig.h"
 #include "fx2math.h"
 
-#define	RC_0			0
-#define	RC_1			1
-#define	RC_2			2
-#define	RC_3			3
-#define	RC_4			4
-#define	RC_5			5
-#define	RC_6			6
-#define	RC_7			7
-#define	RC_8			8
-#define	RC_9			9
+#define	RC_0	0
+#define	RC_1	1
+#define	RC_2	2
+#define	RC_3	3
+#define	RC_4	4
+#define	RC_5	5
+#define	RC_6	6
+#define	RC_7	7
+#define	RC_8	8
+#define	RC_9	9
 
-extern	int	doexit;
-extern	int	debug;
+extern	int		doexit;
+extern	int		debug;
 extern	unsigned short	actcode;
 extern	unsigned short	realcode;
 
@@ -78,16 +78,14 @@ int main( )
 		return -1;
 
 
-	while( doexit != 3 )
-	{
+	while ( doexit != 3 ) {
 		MasterInitialize();
 
 #ifdef USEX
 		FBFlushGrafic();
 #endif
 		doexit=0;
-		while( !doexit )
-		{
+		while ( !doexit ) {
 			tv.tv_sec = 0;
 			tv.tv_usec = 200000;
 			select( 0, 0, 0, 0, &tv );
@@ -98,30 +96,26 @@ int main( )
 #ifdef USEX
 			FBFlushGrafic();
 #endif
-			while( realcode != 0xee )
+			while ( realcode != 0xee )
 				RcGetActCode( );
 		}
-		if ( doexit == 4 )		// level changed
-		{
+		if ( doexit == 4 ) {	// level changed
 			doexit=0;
 			continue;
 		}
 
-		if ( doexit != 3 )
-		{
+		if ( doexit != 3 ) {
 			actcode=0xee;
-#ifdef USEX 
+#ifdef USEX
 			FBFlushGrafic();
 #endif
 			doexit=0;
-			while(( actcode != RC_OK ) && !doexit )
-			{
+			while (( actcode != RC_OK ) && !doexit ) {
 				tv.tv_sec = 0;
 				tv.tv_usec = 100000;
 				x = select( 0, 0, 0, 0, &tv );		/* 100ms pause */
 				RcGetActCode( );
-				if (( actcode > 0 ) && (actcode < 5 ))
-				{
+				if (( actcode > 0 ) && (actcode < 5 )) {
 					Play();
 					doexit=1;
 				}
@@ -129,11 +123,10 @@ int main( )
 		}
 	}
 
-/* fx2 */
-/* buffer leeren, damit neutrino nicht rumspinnt */
+	/* fx2 */
+	/* buffer leeren, damit neutrino nicht rumspinnt */
 	realcode = RC_0;
-	while( realcode != 0xee )
-	{
+	while ( realcode != 0xee ) {
 		tv.tv_sec = 0;
 		tv.tv_usec = 300000;
 		x = select( 0, 0, 0, 0, &tv );		/* 300ms pause */

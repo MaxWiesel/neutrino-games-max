@@ -16,9 +16,9 @@
 // #include <config.h>
 #define HAVE_DREAMBOX_HARDWARE 1
 #if defined HAVE_DREAMBOX_HARDWARE || defined HAVE_IPBOX_HARDWARE
-	static int fd_is_ext = 0;
-	static int keyboard = 0;
-	static int drop = 0;
+static int fd_is_ext = 0;
+static int keyboard = 0;
+static int drop = 0;
 #endif
 
 #define Debug	if (debug) printf
@@ -38,8 +38,7 @@ void	KbInitialize( void )
 
 	kbfd = 0;
 
-	if ( tcgetattr(kbfd,&tios) == -1 )
-	{
+	if ( tcgetattr(kbfd,&tios) == -1 ) {
 		kbfd=-1;
 		return;
 	}
@@ -52,8 +51,7 @@ static unsigned short translate( unsigned short code )
 {
 	int rccode=-1;
 
-	switch(code)
-	{
+	switch (code) {
 	case KEY_UP:
 		rccode = RC_UP;
 		break;
@@ -94,18 +92,13 @@ static unsigned short translate( unsigned short code )
 		rccode = RC_STANDBY;
 		break;
 	default:
-		if( code > 0x7F )
-		{
+		if ( code > 0x7F ) {
 			rccode = 0;
-			if( code == 0x110 )
-			{
+			if ( code == 0x110 ) {
 				rccode = RC_ON;
 			}
-		}
-		else
-		{
-			int rctable[] =
-			{
+		} else {
+			int rctable[] = {
 				0x00, RC_ESC, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'ß', '´', RC_BS, 0x09,
 				'q',  'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', '+', RC_RET, RC_STRG, 'a', 's',
 				'd',  'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '^', RC_LSHIFT, '#', 'y', 'x', 'c', 'v',
@@ -127,21 +120,18 @@ static unsigned short translate( unsigned short code )
 int	RcInitialize( int extfd )
 {
 	char	buf[32];
-	if ( extfd == -1 )
-	{
+	if ( extfd == -1 ) {
 		fd_is_ext = 0;
 		fd = open("/dev/input/nevis_ir", O_RDONLY );
 		if ( fd == -1 )
 			return kbfd;
 		fcntl(fd, F_SETFL, O_NONBLOCK );
-	}
-	else
-	{
+	} else {
 		fd_is_ext = 1;
 		fd = extfd;
 		fcntl(fd, F_SETFL, O_NONBLOCK );
 	}
-/* clear rc-buffer */
+	/* clear rc-buffer */
 	read( fd, buf, 32 );
 	return 0;
 }
@@ -155,20 +145,14 @@ void RcGetActCode( void )
 	struct input_event ev;
 
 	if ( fd != -1 ) {
-
 		do {
-
 			x = read(fd, &ev, sizeof(struct input_event));
-
 			if ((x == sizeof(struct input_event)) && ((ev.value == 1)||(ev.value == 2)))
 				break;
-
 		} while (x == sizeof(struct input_event));
-
 	}
 
-	if ( x % sizeof(struct input_event) )
-	{
+	if ( x % sizeof(struct input_event) ) {
 		//KbGetActCode();
 		realcode=0xee;
 		return;
@@ -179,22 +163,19 @@ void RcGetActCode( void )
 
 	code=translate(ev.code);
 	realcode=code;
-	if ( code == 0xee )
-	{
+	if ( code == 0xee ) {
 		drop = 0;
 		return;
 	}
 
 	Debug("code=%04x\n",code);
 
-	if ( cw == 2 )
-	{
+	if ( cw == 2 ) {
 		actcode=code;
 		return;
 	}
 
-	switch(code)
-	{
+	switch (code) {
 #if 0
 	case RC_HELP:
 		if ( !cw )
@@ -203,8 +184,7 @@ void RcGetActCode( void )
 		break;
 #endif
 	case RC_MUTE:
-		if ( !cw )
-		{
+		if ( !cw ) {
 			cw=2;
 			FBPause();
 			cw=0;
@@ -235,5 +215,5 @@ void	RcClose( void )
 	if ( fd == -1 )
 		return;
 	if ( !fd_is_ext )
-	close(fd);
+		close(fd);
 }

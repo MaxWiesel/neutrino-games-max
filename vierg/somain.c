@@ -20,16 +20,16 @@ extern	int	doexit;
 extern	int	debug;
 extern	unsigned short	actcode;
 extern	unsigned short	realcode;
-#define	RC_0			0
-#define	RC_1			1
-#define	RC_2			2
-#define	RC_3			3
-#define	RC_4			4
-#define	RC_5			5
-#define	RC_6			6
-#define	RC_7			7
-#define	RC_8			8
-#define	RC_9			9
+#define	RC_0	0
+#define	RC_1	1
+#define	RC_2	2
+#define	RC_3	3
+#define	RC_4	4
+#define	RC_5	5
+#define	RC_6	6
+#define	RC_7	7
+#define	RC_8	8
+#define	RC_9	9
 
 static	void	setup_colors( void )
 {
@@ -111,7 +111,7 @@ static	void	setup_colors( void )
 int main( )
 {
 	struct timeval	tv;
-	int				x;
+	int		x;
 	int fdfb = -1, fdrc = -1;
 	if ( FBInitialize( 720, 576, 8, fdfb ) < 0 )
 		return -1;
@@ -127,19 +127,17 @@ int main( )
 	FBFlushGrafic();
 #endif
 
-	while( doexit != 3 )
-	{
+	while ( doexit != 3 ) {
 		BoardInitialize();
 		DrawBoard( 0 );
 // 		Fx2ShowPig( 420, 150, 240, 188 );
 
 		doexit=0;
-		while( !doexit )
-		{
+		while ( !doexit ) {
 			tv.tv_sec = 0;
 			tv.tv_usec = 10000;
 			x = select( 0, 0, 0, 0, &tv );		/* 100ms pause */
-	
+
 			RcGetActCode( );
 			MoveMouse();
 #ifdef USEX
@@ -147,12 +145,10 @@ int main( )
 #endif
 		}
 
-		if ( doexit != 3 )
-		{
+		if ( doexit != 3 ) {
 			actcode=0xee;
 			doexit=0;
-			while(( actcode != RC_OK ) && !doexit )
-			{
+			while (( actcode != RC_OK ) && !doexit ) {
 				tv.tv_sec = 0;
 				tv.tv_usec = 100000;
 				x = select( 0, 0, 0, 0, &tv );		/* 100ms pause */
@@ -163,11 +159,10 @@ int main( )
 
 // 	Fx2StopPig();
 
-/* fx2 */
-/* buffer leeren, damit neutrino nicht rumspinnt */
+	/* fx2 */
+	/* buffer leeren, damit neutrino nicht rumspinnt */
 	realcode = RC_0;
-	while( realcode != 0xee )
-	{
+	while ( realcode != 0xee ) {
 		tv.tv_sec = 0;
 		tv.tv_usec = 300000;
 		x = select( 0, 0, 0, 0, &tv );		/* 300ms pause */
@@ -184,7 +179,7 @@ int main( )
 // {
 // 	int		fd_fb=-1;
 // 	int		fd_rc=-1;
-// 
+//
 // 	for( ; par; par=par->next )
 // 	{
 // 		if ( !strcmp(par->id,P_ID_FBUFFER) )
