@@ -54,8 +54,7 @@ int main( )
 	if ( RcInitialize( fdrc ) < 0 )
 		return -1;
 
-	while( doexit != 3 )
-	{
+	while ( doexit != 3 ) {
 		TankInitialize();
 
 #ifdef USEX
@@ -63,8 +62,7 @@ int main( )
 #endif
 
 		doexit=0;
-		while( !doexit )
-		{
+		while ( !doexit ) {
 			tv.tv_sec = 0;
 			tv.tv_usec = 200000;
 			select( 0, 0, 0, 0, &tv );
@@ -75,32 +73,29 @@ int main( )
 #ifdef USEX
 			FBFlushGrafic();
 #endif
-			while( realcode != 0xee )
+			while ( realcode != 0xee )
 				RcGetActCode( );
 		}
-		if ( doexit == 4 )		// level changed
-		{
+		if ( doexit == 4 ) {	// level changed
 			doexit=0;
 			actcode=0xee;
-			while(( actcode != RC_OK ) && !doexit )
-			{
+			while (( actcode != RC_OK ) && !doexit ) {
 				tv.tv_sec = 0;
 				tv.tv_usec = 200000;
 				select( 0, 0, 0, 0, &tv );
 
 				RcGetActCode( );
 			}
-			while( realcode != 0xee )
+			while ( realcode != 0xee )
 				RcGetActCode( );
 			actcode=0xee;
 		}
 	}
 
-/* fx2 */
-/* buffer leeren, damit neutrino nicht rumspinnt */
+	/* fx2 */
+	/* buffer leeren, damit neutrino nicht rumspinnt */
 	realcode = RC_0;
-	while( realcode != 0xee )
-	{
+	while ( realcode != 0xee ) {
 		tv.tv_sec = 0;
 		tv.tv_usec = 300000;
 		x = select( 0, 0, 0, 0, &tv );		/* 300ms pause */
