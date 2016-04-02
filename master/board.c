@@ -24,6 +24,7 @@
 #include <string.h>
 #include <sys/time.h>
 
+#include "draw.h"
 #include "rcinput.h"
 #include "colors.h"
 #include <string.h>
