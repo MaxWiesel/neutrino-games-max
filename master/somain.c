@@ -2,7 +2,7 @@
 	Neutrino-GUI  -   DBoxII-Project
 
 	Copyright (C) 2002 M. Langer  <fx2@berlios.de>
-	Copyright (C) 2013 bazi98  <bazi98@web.de>
+	Copyright (C) 2013,2016 bazi98  <bazi98@web.de>
 
 	License: GPLv2
 
@@ -68,11 +68,15 @@ int main( )
 	struct timeval	tv;
 	int				x;
 	int fdfb = -1, fdrc = -1;
-	if ( FBInitialize( 720, 576, 8, fdfb ) < 0 )
+
+	const int dx = 1280;
+	const int dy = 720;
+
+	if ( FBInitialize( dx, dy, 8, fdfb ) < 0 )
 		return -1;
 
 	setup_colors();
-	FBFillRect( 0, 0, 1400, 800, BNR0 );
+	FBFillRect( 0, 0, dx, dy, BNR0 );
 
 	if ( RcInitialize( fdrc ) < 0 )
 		return -1;
