@@ -3,6 +3,7 @@
 */
 
 #include <stdio.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 #include <malloc.h>
@@ -178,7 +179,7 @@ void	FBClose( void )
 		if (lfb)
 			munmap(lfb, available);
 	}
-	if (fbdevice)
+	if (fbdevice != -1)
 		close(fbdevice);
 	fbdevice = -1;
 }
@@ -194,7 +195,7 @@ void	FBPaintPixel( int x, int y, unsigned char farbe )
 unsigned char	FBGetPixel( int x, int y )
 {
 	if (doexit == 3)
-		return;
+		return 0;
 
 	return *(lfb + stride*y + x);
 }
