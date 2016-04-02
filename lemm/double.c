@@ -13,21 +13,21 @@
 #include "colors.h"
 #include "sprite.h"
 
-#define	RC_0			0
-#define	RC_1			1
-#define	RC_2			2
-#define	RC_3			3
-#define	RC_4			4
-#define	RC_5			5
-#define	RC_6			6
-#define	RC_7			7
-#define	RC_8			8
-#define	RC_9			9
+#define	RC_0		0
+#define	RC_1		1
+#define	RC_2		2
+#define	RC_3		3
+#define	RC_4		4
+#define	RC_5		5
+#define	RC_6		6
+#define	RC_7		7
+#define	RC_8		8
+#define	RC_9		9
 
 #define max(a,b)	((a)>(b)?(a):(b))
 
 static	unsigned char	*dblImage=0;
-#define	stride	328
+#define	stride		328
 #define	lfb		dblImage
 
 static	unsigned long	lineflags[32];
@@ -36,8 +36,8 @@ static	unsigned long	lineflags[32];
 
 void	dblCopyImage( int x1, int y1, int dx, int dy, unsigned char *src )
 {
-	int			x;
-	int			y;
+	int	x;
+	int	y;
 
 	if ( x1+dx < 0 )
 		return;
@@ -48,16 +48,12 @@ void	dblCopyImage( int x1, int y1, int dx, int dy, unsigned char *src )
 	if ( y1 >= 160 )
 		return;
 
-	for( y=0; (y<dy) && (y+y1<160); y++ )
-	{
+	for ( y=0; (y<dy) && (y+y1<160); y++ ) {
 		if ( y1+y < 0 )
 			continue;
-		for( x=0; (x<dx) && (x+x1<stride); x++ )
-		{
-			if (( x1+x >= 0 ) && *(src+dx*y+x) )
-			{
-				if ( *(lfb+(y1+y)*stride+x1+x) != *(src+dx*y+x) )
-				{
+		for ( x=0; (x<dx) && (x+x1<stride); x++ ) {
+			if (( x1+x >= 0 ) && *(src+dx*y+x) ) {
+				if ( *(lfb+(y1+y)*stride+x1+x) != *(src+dx*y+x) ) {
 					*(lfb+(y1+y)*stride+x1+x) = *(src+dx*y+x);
 					MarkFlag(x+x1,y+y1);
 				}
@@ -68,45 +64,43 @@ void	dblCopyImage( int x1, int y1, int dx, int dy, unsigned char *src )
 
 void	dblXMove( int x1, int x2 )
 {
-	int				y;
-	int				i;
-	int				dx=0;
+	int	y;
+	int	i;
+	int	dx=0;
 
-	if ( x1 < x2 )
-	{
+	if ( x1 < x2 ) {
 		dx=x2-x1;
 
-		for( y=0; y < 160; y++ )
+		for ( y=0; y < 160; y++ )
 			memmove(lfb+y*stride+x2,lfb+y*stride+x1,stride-dx);
 		*lineflags=0;
-		for( i=x1/16; i<(x2+1)/16; i++ )
+		for ( i=x1/16; i<(x2+1)/16; i++ )
 			*lineflags|=(1L<<i);
-		for( i=1; i<32; i++ )
+		for ( i=1; i<32; i++ )
 			lineflags[i]=*lineflags;
 	}
-	if ( x1 > x2 )
-	{
+	if ( x1 > x2 ) {
 		dx=x1-x2;
 
-		for( y=0; y < 160; y++ )
+		for ( y=0; y < 160; y++ )
 			memcpy(lfb+y*stride+x2,lfb+y*stride+x1,stride-dx);
 		*lineflags=0;
-		for( i=(stride-dx)/16; i<(stride)/16; i++ )
+		for ( i=(stride-dx)/16; i<(stride)/16; i++ )
 			*lineflags|=(1L<<i);
-		for( i=1; i<32; i++ )
+		for ( i=1; i<32; i++ )
 			lineflags[i]=*lineflags;
 	}
 	if ( !dx )
 		return;
 
-/* move screen also */
+	/* move screen also */
 	FBMove( x1+x1+32, 32, x2+x2+32, 32, 656-dx-dx, 320 );
 }
 
 static	void	_drawLine( int x, int y, int dx )
 {
 	unsigned char	*p;
-	int				i;
+	int		i;
 
 	y*=5;
 	x<<=4;	// *16
@@ -116,29 +110,26 @@ static	void	_drawLine( int x, int y, int dx )
 	if ( x+dx>stride)
 		dx=stride-x;
 
-	for( i=0; i<10; i+=2, p+=stride )
+	for ( i=0; i<10; i+=2, p+=stride )
 		FB2CopyImage( x+x+32, y+y+i+32, dx, 1, p, 1 );
 }
 
 void	dblDrawFrame( int all )
 {
-	int				k;
-	int				i;
+	int		k;
+	int		i;
 	unsigned long	f;
-	int				x=0;
-	int				dx=0;
+	int		x=0;
+	int		dx=0;
 
-	for( k=0; k<32; k++ )
-	{
+	for ( k=0; k<32; k++ ) {
 		dx=0;
 		x=0;
-		for( i=0; i<21; i++ )
-		{
+		for ( i=0; i<21; i++ ) {
 			if ( !all && !lineflags[k] )
 				break;
 			f= (1L<<i);
-			if ( !all && !(lineflags[k] & f ) )
-			{
+			if ( !all && !(lineflags[k] & f ) ) {
 				if ( dx )
 					_drawLine( x, k, dx );
 				dx=0;
