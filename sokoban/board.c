@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <config.h>
+#include "tmp_defines.h"
 
 #define	RC_0		0
 #define	RC_1		1
@@ -52,18 +52,6 @@ void ladeVerzeichnis (void)
 {
 	struct dirent **eps;
 	int n;
-//  char* Verz2;
-
-//  char* Verzeichnis = getcwd (NULL, 0);
-//  puts(Verzeichnis);
-
-
-//	Verz2 = (char*) malloc(strlen(Verzeichnis)+2);
-//	strcpy(Verz2,Verzeichnis);
-//	strcat(Verz2,"/");
-//	puts(Verz2);
-
-//  n = scandir (Verzeichnis, &eps, one, alphasort);
 
 	max_level = 0;
 	n = scandir ( DATADIR "/sokoban/", &eps, one, alphasort);
@@ -89,9 +77,6 @@ void ladeVerzeichnis (void)
 	if (max_level == 0) {
 		levelname[0]=strdup("Installation error");
 	}
-
-//	free(Verz2);
-//	free(Verzeichnis);
 }
 
 void freeMem(void)
@@ -302,15 +287,6 @@ void Startbildschirm()
 {
 	int i;
 	char tlevel[ 64 ];
-
-//	int x,y;
-//	for (y=0; y<576; y=y+56)
-//		{
-//		for (x=0; x<720; x=x+64)
-//			{
-//			FB2CopyImage(  x, y, 32, 28, man, 2);
-//			}
-//		}
 
 	static int bx[] = {
 		64,32,0,0,0,32,64,64,64,32,0,128,160,192,192,192,192,192,160,128,128,128,
@@ -590,7 +566,7 @@ void	MoveMouse()
 		FBDrawString( 160,220, 30, "PLUS  Zug vor", WHITE, 0 );
 		FBDrawString( 160,260, 30, "HOME  Spiel beenden", WHITE, 0 );
 		FBDrawString( 160,290, 30, "STUMM Spiel aus-/einblenden", WHITE, 0 );
-		FBDrawString( 160,330, 30, "HILFE diese Hilfe", WHITE, 0 );
+		FBDrawString( 160,330, 30, "HELP diese Hilfe", WHITE, 0 );
 		FBDrawString( 160,370, 30, "OK    weiter", WHITE, 0 );
 #ifdef USEX
 		FBFlushGrafic();

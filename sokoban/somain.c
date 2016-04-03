@@ -13,7 +13,6 @@
 #include "board.h"
 #include "colors.h"
 #include "pig.h"
-//#include <plugin.h>
 
 extern	int	doexit;
 extern	int	debug;
@@ -238,8 +237,6 @@ int main( )
 	if ( RcInitialize( fdrc ) < 0 )
 		return -1;
 
-//	Fx2ShowPig( 540, 450, 120, 90 );
-
 	ladeVerzeichnis();
 	Startbildschirm();
 
@@ -291,8 +288,6 @@ int main( )
 		}
 	}
 
-//	Fx2StopPig();
-
 	/* fx2 */
 	/* buffer leeren, damit neutrino nicht rumspinnt */
 	realcode = RC_0;
@@ -310,20 +305,3 @@ int main( )
 
 	return 0;
 }
-
-//int plugin_exec( PluginParam *par )
-//{
-//	int		fd_fb=-1;
-//	int		fd_rc=-1;
-//
-//	for( ; par; par=par->next )
-//	{
-//		if ( !strcmp(par->id,P_ID_FBUFFER) )
-//			fd_fb=_atoi(par->val);
-//		else if ( !strcmp(par->id,P_ID_RCINPUT) )
-//			fd_rc=_atoi(par->val);
-//		else if ( !strcmp(par->id,P_ID_NOPIG) )
-//			fx2_use_pig=!_atoi(par->val);
-//	}
-//	return soko_exec( fd_fb, fd_rc, -1, 0 );
-//}
