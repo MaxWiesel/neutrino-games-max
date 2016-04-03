@@ -80,7 +80,7 @@ int main( )
 #ifdef HAVE_DREAMBOX_HARDWARE
 			tv.tv_usec = 8000;
 #else
-			tv.tv_usec = 1000;
+			tv.tv_usec = 12000;
 #endif
 			x = select( 0, 0, 0, 0, &tv );		/* 10ms pause */
 
@@ -108,7 +108,7 @@ int main( )
 			jumplevel=-1;
 			while (( actcode != RC_OK ) && !doexit ) {
 				tv.tv_sec = 0;
-				tv.tv_usec = 100000;
+				tv.tv_usec = 200000;
 				x = select( 0, 0, 0, 0, &tv );		/* 100ms pause */
 				RcGetActCode( );
 				if ( actcode == RC_HELP ) {
@@ -117,7 +117,7 @@ int main( )
 					actcode=0xee;
 					while (( actcode == 0xee ) && !doexit ) {
 						tv.tv_sec = 0;
-						tv.tv_usec = 100000;
+						tv.tv_usec = 200000;
 						x = select( 0, 0, 0, 0, &tv );		/* 100ms pause */
 						RcGetActCode( );
 					}
