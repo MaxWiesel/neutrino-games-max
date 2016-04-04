@@ -41,7 +41,7 @@ static	unsigned char	board[22][18];
 static int		MAZEW;
 static int		MAZEH;
 
-static int one (struct dirent *name)		// Filter für ladeVerzeichnis
+static int one (const struct dirent *name)	// Filter für ladeVerzeichnis
 {
 	char* ext = ".xsb";
 	if (strstr(name->d_name,ext)!=NULL) { return 1;}
@@ -278,7 +278,7 @@ void	BoardInitialize()
 	DrawScore();
 	FBDrawString( 300, 510, 30, levelname[level], WHITE, 0 );
 
-	for (i=0; i<=1500;i++) {
+	for (i = 0; i < 1500; i++) {
 		Zuege[i]=' ';
 	}
 }
