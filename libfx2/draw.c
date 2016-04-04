@@ -2009,7 +2009,7 @@ const unsigned char data_table[NBYTES] = {
 	/* 9270 */   193
 };
 
-int	FBDrawString( int xpos, int ypos, int height, char *msg,
+int	FBDrawString( int xpos, int ypos, int height, const char *msg,
 		  unsigned char col,		/* text color */
 		  unsigned char backcol )	/* background 0==transp */
 {
