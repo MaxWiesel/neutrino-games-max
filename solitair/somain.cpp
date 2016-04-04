@@ -51,12 +51,14 @@ int main( )
 
 	CTable table;
 
+	const int dx = 1280;
+	const int dy = 720;
 	int fdfb = -1, fdrc = -1;
-	if ( FBInitialize( 720, 576, 8, fdfb ) < 0 )
+	if ( FBInitialize( dx, dy, 8, fdfb ) < 0 )
 		return -1;
 
 	Set_8Bit_Pal();
-	FBFillRect( 0, 0, 1400, 800, BNR0 );
+	FBFillRect( 0, 0, dx, dy, BNR0 );
 
 	if ( RcInitialize( fdrc ) < 0 )
 		return -1;
