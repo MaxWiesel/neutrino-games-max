@@ -6,8 +6,8 @@
 #include <stdlib.h>
 
 struct PNM_FILE {
-	char*		file_name;
-	unsigned char*	body;
+	const char*		file_name;
+	const unsigned char*	body;
 	unsigned int	lenght;
 	unsigned int	current_position;
 	unsigned char	current_rle_pos;

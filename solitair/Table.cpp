@@ -4,6 +4,7 @@
 
 #define __STDC_CONSTANT_MACROS
 
+#include "tmp_defines.h"
 #include "Table.h"
 
 extern "C"
@@ -21,8 +22,6 @@ extern "C"
 #include "Buffer.h"
 #include "backbuffer.h"
 #include <sys/time.h>
-
-#include <config.h>
 
 extern	unsigned short	actcode; //from rcinput
 extern	unsigned short	realcode; //from rcinput

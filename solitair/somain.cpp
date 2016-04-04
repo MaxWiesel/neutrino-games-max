@@ -24,10 +24,7 @@ extern "C"
 }
 
 #include "pnm_file.h"
-
 #include "Table.h"
-#define CONFIGDIR "."
-#define GAMESDIR "."
 
 extern	int		debug;
 extern	int		doexit;
