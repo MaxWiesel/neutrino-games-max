@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "tmp_defines.h"
 
@@ -54,6 +55,7 @@ void ladeVerzeichnis (void)
 	int n;
 
 	max_level = 0;
+	mkdir(DATADIR "/sokoban/", 0755);
 	n = scandir ( DATADIR "/sokoban/", &eps, one, alphasort);
 	if (n >= 0) {
 		int cnt;
@@ -64,6 +66,7 @@ void ladeVerzeichnis (void)
 		max_level = n;
 	}
 
+	mkdir(CONFIGDIR "/sokoban/", 0755);
 	n = scandir ( CONFIGDIR "/sokoban/", &eps, one, alphasort);
 	if (n >= 0) {
 		int cnt;
