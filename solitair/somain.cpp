@@ -29,25 +29,25 @@ extern "C"
 #define CONFIGDIR "."
 #define GAMESDIR "."
 
-extern	int				debug;
-extern	int				doexit;
+extern	int		debug;
+extern	int		doexit;
 extern	unsigned short	actcode;
 extern	unsigned short	realcode;
 
-#define	RC_0			0
-#define	RC_1			1
-#define	RC_2			2
-#define	RC_3			3
-#define	RC_4			4
-#define	RC_5			5
-#define	RC_6			6
-#define	RC_7			7
-#define	RC_8			8
-#define	RC_9			9
+#define	RC_0		0
+#define	RC_1		1
+#define	RC_2		2
+#define	RC_3		3
+#define	RC_4		4
+#define	RC_5		5
+#define	RC_6		6
+#define	RC_7		7
+#define	RC_8		8
+#define	RC_9		9
 
 int main( )
 {
-	int 			rc = 0;
+	int	rc = 0;
 
 	CTable table;
 

@@ -32,22 +32,15 @@ private:
 	void Save();
 	void Load();
 
-
-
 	unsigned char act_slot;
 	void HandleKeysPressed();
 
-	CHand			hand;
-
-	CBlock			block;
-
-	CWastepile		wastepile;
-
-	CFoundation		foundation[4];
-
-	CTableau		tableau[7];
-
-	bool			changed[15];
+	CHand		hand;
+	CBlock		block;
+	CWastepile	wastepile;
+	CFoundation	foundation[4];
+	CTableau	tableau[7];
+	bool		changed[15];
 
 protected:
 	void ChangeSelection( bool select = true, bool select_all = true );

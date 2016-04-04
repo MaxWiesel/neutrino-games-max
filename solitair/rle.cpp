@@ -9,18 +9,17 @@
 void Usage()
 {
 	printf(
-				"Usage:\n\n"
-				"rle -c|-d <file_in>\n"
-				"\nwhere \t-c  compress"
-				"\n\t-d  decompress\n" );
+		"Usage:\n\n"
+		"rle -c|-d <file_in>\n"
+		"\nwhere \t-c  compress"
+		"\n\t-d  decompress\n" );
 }
 
 int	Decompress( const char* filename );
 
 int	Compress( const char* filename )
 {
-	if( NULL == filename || 0 == strlen( filename ) )
-	{
+	if ( NULL == filename || 0 == strlen( filename ) ) {
 		Usage();
 		return 2;
 	}
@@ -30,16 +29,14 @@ int	Compress( const char* filename )
 
 	char* filename_out;
 
-	if( NULL == in )
-	{
+	if ( NULL == in ) {
 		printf("Cannot open [%s]\n", filename );
 		return 2;
 	}
 
 	filename_out = (char*) malloc( strlen( filename + 4 ) );
 
-	if( filename_out == NULL )
-	{
+	if ( filename_out == NULL ) {
 		printf("Memory out!\n");
 		return 2;
 	}
@@ -48,8 +45,7 @@ int	Compress( const char* filename )
 
 	out = fopen( filename_out, "wb" );
 
-	if( NULL == out )
-	{
+	if ( NULL == out ) {
 		printf("Cannot create [%s] for output\n", filename_out );
 		return 2;
 	}
@@ -59,8 +55,6 @@ int	Compress( const char* filename )
 ///////////////
 //compress now
 ///////////////
-
-
 
 	// 0xC0
 	unsigned char	cursor = 0;
@@ -73,14 +67,11 @@ int	Compress( const char* filename )
 
 	unsigned char	counter;
 
-	while( 1 )
-	{
+	while ( 1 ) {
 		rep_byte = fgetc( in );
 
-		if( rep_byte == EOF )
-		{
-			if( cursor == counter )
-			{
+		if ( rep_byte == EOF ) {
+			if ( cursor == counter ) {
 				counter += 128;
 				fputc( counter, out );
 				fwrite( bytes, 1, counter - 128 , out );
@@ -88,9 +79,7 @@ int	Compress( const char* filename )
 				cursor = 1;
 				bytes[0] = rep_byte;
 				bytes[1] = 0;
-			}
-			else
-			{
+			} else {
 				counter += 192;
 				fputc( counter, out );
 				fputc( bytes[0], out );
@@ -101,21 +90,17 @@ int	Compress( const char* filename )
 			}
 
 			break;
-		}
-		else
-		if( cursor == 63 )
-		{
-			counter += 128;
-			fputc( counter, out );
-			fwrite( bytes, 1, 63, out );
+		} else
+			if ( cursor == 63 ) {
+				counter += 128;
+				fputc( counter, out );
+				fwrite( bytes, 1, 63, out );
 
-			counter = 1;
-			cursor = 1;
-			bytes[0] = rep_byte;
-			bytes[1] = 0;
-		}
-		else if( counter == 63 )
-			{
+				counter = 1;
+				cursor = 1;
+				bytes[0] = rep_byte;
+				bytes[1] = 0;
+			} else if ( counter == 63 ) {
 				counter += 192;
 				fputc( counter, out );
 				fputc( bytes[0], out );
@@ -124,62 +109,50 @@ int	Compress( const char* filename )
 				bytes[0] = rep_byte;
 				bytes[1] = 0;
 				counter = 1;
-			}
-			else if( cursor == 0 )
-				{
+			} else if ( cursor == 0 ) {
+				bytes[0] = rep_byte;
+				bytes[1] = 0;
+				counter = 1;
+				cursor = 1;
+			} else {
+				if ( rep_byte == bytes[cursor-1] && cursor == 1 ) {
+					counter++;
+				} else if ( rep_byte == bytes[cursor-1] ) {
+					// changed situation we have to flush out data,
+					// next we have repeated data to handle
+
+					fputc( counter - 1 + 128 , out );
+					fwrite( bytes, 1, counter - 1, out );
+
 					bytes[0] = rep_byte;
 					bytes[1] = 0;
-					counter = 1;
 					cursor = 1;
+					counter = 2;
+				} else if ( cursor == 1 && counter > 1 ) {
+					fputc( counter + 192 , out );
+					fputc( bytes[0], out );
+
+					bytes[0] = rep_byte;
+					bytes[1] = 0;
+					cursor = 1;
+					counter = 1;
+
+				} else if ( rep_byte != bytes[cursor-1] ) {
+
+					bytes[cursor] = rep_byte;
+					bytes[cursor+1]  = 0;
+					counter++;
+					cursor++;
+				} else {
+					fputc( counter + 192 , out );
+					fputc( bytes[0], out );
+
+					bytes[0] = rep_byte;
+					bytes[1] = 0;
+					cursor = 1;
+					counter = 1;
 				}
-				else
-				{
-					if( rep_byte == bytes[cursor-1] && cursor == 1 )
-					{
-						counter++;
-					}
-					else if( rep_byte == bytes[cursor-1] )
-					{
-						// changed situation we have to flush out data,
-						// next we have repeated data to handle
-
-						fputc( counter - 1 + 128 , out );
-						fwrite( bytes, 1, counter - 1, out );
-
-						bytes[0] = rep_byte;
-						bytes[1] = 0;
-						cursor = 1;
-						counter = 2;
-					}
-					else if( cursor == 1 && counter > 1 )
-					{
-						fputc( counter + 192 , out );
-						fputc( bytes[0], out );
-
-						bytes[0] = rep_byte;
-						bytes[1] = 0;
-						cursor = 1;
-						counter = 1;
-
-					} else if( rep_byte != bytes[cursor-1] )
-						{
-
-							bytes[cursor] = rep_byte;
-							bytes[cursor+1]  = 0;
-							counter++;
-							cursor++;
-						}
-						else
-						{
-							fputc( counter + 192 , out );
-							fputc( bytes[0], out );
-
-							bytes[0] = rep_byte;
-							bytes[1] = 0;
-							cursor = 1;
-							counter = 1;
-						}
-				}
+			}
 	}
 
 
@@ -197,8 +170,7 @@ int Decompress( const char* filename )
 {
 	FILE* in = fopen( filename, "rb" );
 
-	if( NULL == in )
-	{
+	if ( NULL == in ) {
 		printf("Cannot open [%s]\n", filename );
 		return 2;
 	}
@@ -206,13 +178,12 @@ int Decompress( const char* filename )
 	char filename_out[255];
 	unsigned char cursor = 0;
 
-	while(
-			cursor < 255 &&
-			EOF != ( filename_out[cursor] = fgetc( in ) ) &&
-			( filename_out[cursor] != 0 ) ) cursor++;
+	while (
+		cursor < 255 &&
+		EOF != ( filename_out[cursor] = fgetc( in ) ) &&
+		( filename_out[cursor] != 0 ) ) cursor++;
 
-	if( cursor == 255 || EOF == filename_out[cursor] )
-	{
+	if ( cursor == 255 || EOF == filename_out[cursor] ) {
 		printf( "Decompress: invalid file format!\n" );
 		fclose( in );
 		return 3;
@@ -223,8 +194,7 @@ int Decompress( const char* filename )
 
 	FILE* out = fopen( filename_out, "wb" );
 
-	if( NULL == out )
-	{
+	if ( NULL == out ) {
 		printf("Cannot create [%s] for output\n", filename_out );
 		fclose( in );
 		return 2;
@@ -232,12 +202,10 @@ int Decompress( const char* filename )
 
 	int byte;
 
-	while( EOF != ( byte = fgetc( in ) ) )
-	{
+	while ( EOF != ( byte = fgetc( in ) ) ) {
 		char counter;
 
-		if( !(byte&128) )
-		{
+		if ( !(byte&128) ) {
 			printf("Some error while decompressing!");
 			fclose( in );
 			fclose( out );
@@ -245,22 +213,18 @@ int Decompress( const char* filename )
 		}
 
 
-		if( !(byte & 64) )
-		{
+		if ( !(byte & 64) ) {
 			counter = byte - 128;
 
-			while( EOF != ( byte = fgetc( in ) ) )
-			{
+			while ( EOF != ( byte = fgetc( in ) ) ) {
 				fputc( byte, out );
-				if( counter-- == 1 ) break;
+				if ( counter-- == 1 ) break;
 			}
-		}
-		else
-		{
+		} else {
 			counter = byte - 192;
 			byte = fgetc( in );
 
-			while( counter-- > 0 ) fputc( byte, out );
+			while ( counter-- > 0 ) fputc( byte, out );
 		}
 	}
 
@@ -275,24 +239,21 @@ int Decompress( const char* filename )
 int main(int argc, char* argv[])
 {
 
-	if( argc < 3 )
-	{
+	if ( argc < 3 ) {
 		Usage();
 		return 1;
 	}
 
-	if(
+	if (
 		(argv[1][0] != '-') &&
 		(argv[1][1] != 'c') &&
-		(argv[1][1] != 'd') )
-	{
+		(argv[1][1] != 'd') ) {
 		Usage();
 		return -1;
 	}
 
 
-	switch( argv[1][1] )
-	{
+	switch ( argv[1][1] ) {
 	case 'c': return Compress( argv[2] );
 	case 'd': return Decompress( argv[2] );
 	}

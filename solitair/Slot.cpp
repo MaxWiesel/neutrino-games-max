@@ -20,8 +20,7 @@ CSlot::CSlot()
 
 CSlot::~CSlot()
 {
-	if( cardstack )
-	{
+	if ( cardstack ) {
 		free(cardstack);
 		cardstack = NULL;
 	}
@@ -41,23 +40,20 @@ bool CSlot::PushCard( const CCard& _card, bool no_check )
 {
 
 
-	if( false == _card.IsValid() ) return false;
+	if ( false == _card.IsValid() ) return false;
 
 
 
-	if( false == no_check )
-		if( false == this->CheckPushPrecondition( _card ) )
+	if ( false == no_check )
+		if ( false == this->CheckPushPrecondition( _card ) )
 			return false;
 
 
 
-	if( 0 == cards_stored )
-	{
+	if ( 0 == cards_stored ) {
 
 		cardstack = (CCard*)malloc( sizeof( CCard) );
-	}
-	else
-	{
+	} else {
 
 		cardstack = (CCard*)realloc( cardstack, sizeof( CCard ) * ( cards_stored + 1 ) );
 	}
@@ -73,8 +69,8 @@ bool CSlot::PushCard( const CCard& _card, bool no_check )
 * Function : PopCard
 *
 * Description: removes a card from the array
-*              if the slot is empty the return value a card
-*              with illegal values of suit and value
+*	      if the slot is empty the return value a card
+*	      with illegal values of suit and value
 *
 *
 *************************************************************/
@@ -84,10 +80,10 @@ CCard CSlot::PopCard()
 
 
 
-	if( 0 == cards_stored ) return CCard();
+	if ( 0 == cards_stored ) return CCard();
 
 
-	if( cards_selected )
+	if ( cards_selected )
 		this->cards_selected--;
 
 
@@ -96,13 +92,10 @@ CCard CSlot::PopCard()
 
 	tmp = this->cardstack[ cards_stored ];
 
-	if( cards_stored )
-	{
+	if ( cards_stored ) {
 
 		cardstack = (CCard*)realloc( cardstack, sizeof( CCard ) * ( cards_stored ) );
-	}
-	else
-	{
+	} else {
 
 		free( cardstack );
 		cardstack = NULL;
@@ -127,10 +120,8 @@ void CSlot::Fill()
 
 	unsigned char i;
 
-	for( i = 0; i < 52; i++ )
-	{
-		if( 13 == value )
-		{
+	for ( i = 0; i < 52; i++ ) {
+		if ( 13 == value ) {
 			value = 0;
 			suit ++;
 		}
@@ -146,8 +137,7 @@ void CSlot::Shuffle()
 
 	srand((unsigned)time(NULL));
 
-	for( i = 0; i < cards_stored; i++ )
-	{
+	for ( i = 0; i < cards_stored; i++ ) {
 		unsigned char pair = rand()%cards_stored;
 
 		CCard tmp		= cardstack[pair];
@@ -172,8 +162,7 @@ void CSlot::RemoveAll()
 
 
 	this->cards_stored	= 0;
-	if( cardstack )
-	{
+	if ( cardstack ) {
 
 		free( cardstack );
 		cardstack = NULL;
@@ -188,13 +177,13 @@ void CSlot::RemoveAll()
 * Function : PeekCard
 *
 * Description: Retrieves a card on top of the stack whithout
-*              to remove it from the stack
+*	      to remove it from the stack
 *
 *
 *************************************************************/
 CCard CSlot::PeekCard()
 {
-	if( 0 == cards_stored )
+	if ( 0 == cards_stored )
 		return CCard();
 
 	return this->cardstack[ cards_stored - 1 ];
@@ -210,7 +199,7 @@ CCard CSlot::PeekCard()
 *************************************************************/
 bool CSlot::DecreaseSelection()
 {
-	if( 0 == cards_selected )
+	if ( 0 == cards_selected )
 		return false;
 
 	cards_selected--;
@@ -227,12 +216,11 @@ bool CSlot::DecreaseSelection()
 *************************************************************/
 void CSlot::GetSelectedCards( CSlot *buffer )
 {
-	if( NULL == buffer || 0 == cards_stored ) return;
+	if ( NULL == buffer || 0 == cards_stored ) return;
 
 	buffer->RemoveAll();
 
-	while( cards_stored && 0 != cards_selected )
-	{
+	while ( cards_stored && 0 != cards_selected ) {
 		CCard tmp = this->PopCard();
 		buffer->PushCard( tmp );
 	}
@@ -241,7 +229,7 @@ void CSlot::GetSelectedCards( CSlot *buffer )
 void CSlot::PeekAllCards( CSlot *buffer )
 {
 
-	if( NULL == buffer ) return;
+	if ( NULL == buffer ) return;
 
 
 	buffer->RemoveAll();
@@ -249,8 +237,7 @@ void CSlot::PeekAllCards( CSlot *buffer )
 	int i = cards_stored-1;
 
 
-	while( 0 <= i )
-	{
+	while ( 0 <= i ) {
 		buffer->PushCard( cardstack[i--] );
 	}
 }

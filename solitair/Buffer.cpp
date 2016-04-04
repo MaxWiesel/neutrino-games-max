@@ -30,5 +30,5 @@ void CBuffer::Draw(unsigned int _x, unsigned int _y, bool selected )
 
 bool CBuffer::IncreaseSelection()
 {
-return false;
+	return false;
 }

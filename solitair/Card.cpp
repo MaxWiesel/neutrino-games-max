@@ -18,19 +18,16 @@ extern "C"
 
 #include "backbuffer.h"
 
-
-#define CARD_WIDTH		74
-#define CARD_HEIGHT		110
-
-#define CARD_SPACE		5
-#define CARD_CORNER		15
+#define CARD_WIDTH	74
+#define CARD_HEIGHT	110
+#define CARD_SPACE	5
+#define CARD_CORNER	15
 
 
 
 char*			suits[4] = { "h", "d", "c", "s" };
 
-const char*		terms[] =
-{
+const char*		terms[] = {
 	/* 0 */
 	"small",
 	"large",
@@ -76,26 +73,22 @@ const char*		terms[] =
 
 
 
-struct card_element
-{
+struct card_element {
 	unsigned char	term;
-	bool			suit;
+	bool		suit;
 	unsigned char	value; //if suit is false, add value
-	int				dx;
-	int				dy;
-	bool			invert;
+	int		dx;
+	int		dy;
+	bool		invert;
 };
 
 
-struct card_def
-{
+struct card_def {
 	unsigned char	num_of_elements;
-
 	card_element	elements[10];
 };
 
-card_def	cards[13] =
-{
+card_def	cards[13] = {
 	{ /* ace */
 		1,
 		{ TLARGE, true, 9, 30,40, false }
@@ -230,8 +223,8 @@ card_def	cards[13] =
 
 CCard::CCard()
 {
-	this->suit		= 4;
-	this->value		= 14;
+	this->suit	= 4;
+	this->value	= 14;
 	this->face_down = true;
 }
 
@@ -256,8 +249,8 @@ int	CCard::CompareValue( const CCard& _card )
 
 bool CCard::IsValid() const
 {
-	if( 3 >= this->suit  )
-		if( 12>= this->value )
+	if ( 3 >= this->suit  )
+		if ( 12>= this->value )
 			return true;
 
 	return false;
@@ -269,18 +262,17 @@ void CCard::Draw( unsigned int _x, unsigned int _y, bool draw_selected, unsigned
 {
 	char filename[255];
 
-	if( false == this->IsValid() ) return;
+	if ( false == this->IsValid() ) return;
 
 	//Draw border
 	DrawPNM( "border.pnm", _x,_y, false, _width, _height );
 
-	if( true == face_down )
-	{
+	if ( true == face_down ) {
 		DrawPNM( "back.pnm", _x+4,_y+4, false, _width, _height );
 		return;
 	}
 
-/* Draw Corners */
+	/* Draw Corners */
 
 	strcpy( filename, suit<2?terms[TRED]:terms[TBLACK] );
 	strcat( filename, "-" );
@@ -296,17 +288,15 @@ void CCard::Draw( unsigned int _x, unsigned int _y, bool draw_selected, unsigned
 	DrawPNM( filename, _x + 73 - 3, _y + 97- 19, true );
 
 
-/* Draw middle part */
+	/* Draw middle part */
 #define CARD_DEF cards[this->value].elements[i]
 
 	unsigned char i = 0;
 
-	for( i = 0; i < cards[this->value].num_of_elements; i++ )
-	{
+	for ( i = 0; i < cards[this->value].num_of_elements; i++ ) {
 		strcpy( filename, terms[CARD_DEF.term] );
 		strcat( filename, "-" );
-		if( false == CARD_DEF.suit )
-		{
+		if ( false == CARD_DEF.suit ) {
 			strcat( filename, terms[ 9 + this->value ] );
 		}
 
@@ -320,42 +310,33 @@ void CCard::Draw( unsigned int _x, unsigned int _y, bool draw_selected, unsigned
 }
 
 int CCard::DrawPNM(
-			const char* _file_name,
-			int _x, int _y,
-			bool invert, /* flip vertical */
-			unsigned char _width, unsigned char _height,
-			bool pbp /* pixel by pixel */   )
+	const char* _file_name,
+	int _x, int _y,
+	bool invert, /* flip vertical */
+	unsigned char _width, unsigned char _height,
+	bool pbp /* pixel by pixel */   )
 {
 	IMAGE* 	ci = read_image( _file_name );
 
-	if( ci == NULL ) return 0;
+	if ( ci == NULL ) return 0;
 
 	int 		current_row = 0;
 	int		drow = ci->width;
 	int		mod = invert?-1:1;
 	unsigned char	transparent = Convert_24_8( 0x20, 0xFF, 0xFF );
 
-	for( int i = 0; i < ci->height; i++, current_row += drow )
-	{
-		if( pbp )
-		{
-			for( int ipx = 0; ipx < ci->width; ipx++ )
-			{
-				if( transparent != ci->raw_data[current_row + ipx] )
+	for ( int i = 0; i < ci->height; i++, current_row += drow ) {
+		if ( pbp ) {
+			for ( int ipx = 0; ipx < ci->width; ipx++ ) {
+				if ( transparent != ci->raw_data[current_row + ipx] )
 					BBPutPixel( ci->raw_data[current_row + ipx], _x + ipx * mod, _y + i * mod );
 			}
 
-		}
-		else
-		{
-			if( !invert )
-			{
+		} else {
+			if ( !invert ) {
 				memcpy( &BBGetData()[(_y + i ) * WIDTH + _x], ci->raw_data + current_row, ci->width );
-			}
-			else
-			{
-				for( int ipx = 0; ipx < ci->width; ipx++ )
-				{
+			} else {
+				for ( int ipx = 0; ipx < ci->width; ipx++ ) {
 					BBPutPixel( ci->raw_data[current_row + ipx], _x + ipx * mod, _y + i * mod );
 				}
 			}
