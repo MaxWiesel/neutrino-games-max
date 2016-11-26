@@ -1,0 +1,59 @@
+--- a/sudoku/sudoku.cpp
++++ b/sudoku/sudoku.cpp
+@@ -19,7 +19,6 @@
+ 	If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include <config.h>
+ #include "sudoku.h"
+ 
+ #include <stdio.h>
+@@ -471,22 +470,10 @@ int CSudoku::Solve(int nIndex, bool bCountSolutions)
+ 	if(m_nCount1 > MAX_SOLVE_CALLS)
+ 		return 0;
+ 
+-	// array index to coords
+-//	int nBlockIdx, nBlockRow, nBlockCol, nFieldIdx, nFieldRow, nFieldCol;
+-
+ 	// find next unsolved field
+ 	tSymbol *pSymbol;
+ 	while(1)
+ 	{
+-//		nBlockIdx = nIndex / m_nBlockSize;
+-//		nBlockRow = nBlockIdx % m_nBlockColumns;
+-//		nBlockCol = nBlockIdx / 3;
+-//		nFieldIdx = nIndex - (nBlockIdx * m_nBlockSize);
+-//		nFieldRow = nFieldIdx % m_nFieldColumns;
+-//		nFieldCol = nFieldIdx / m_nFieldColumns;
+-
+-//		pSymbol = GetSymbol(nBlockCol, nBlockRow, nFieldCol, nFieldRow);
+-//		pSymbol = GetSymbol(m_pnBlockColIndexLookup[nIndex], m_pnBlockRowIndexLookup[nIndex], m_pnFieldColIndexLookup[nIndex], m_pnFieldRowIndexLookup[nIndex]);
+ 		pSymbol = GetSymbol(nIndex);
+ 
+ 		if(pSymbol->cSolution != 0)
+@@ -511,9 +498,6 @@ int CSudoku::Solve(int nIndex, bool bCountSolutions)
+ 	for(i=0; i<m_nSymbolsCount; i++)
+ 	{
+ 		// check if this symbol keeps the rules in that field
+-//		if(	CheckCol(nBlockRow, nFieldRow, m_pszSymbols[i])	== 0	&&
+-//				CheckRow(nBlockCol, nFieldCol, m_pszSymbols[i])	== 0	&&
+-//				CheckBlock(nBlockCol, nBlockRow, m_pszSymbols[i])	== 0)
+ 		if(	CheckCol(m_pnBlockRowIndexLookup[nIndex], m_pnFieldRowIndexLookup[nIndex], m_pszSymbols[i])	== 0	&&
+ 				CheckRow(m_pnBlockColIndexLookup[nIndex], m_pnFieldColIndexLookup[nIndex], m_pszSymbols[i])	== 0	&&
+ 				CheckBlock(m_pnBlockColIndexLookup[nIndex], m_pnBlockRowIndexLookup[nIndex], m_pszSymbols[i])	== 0)
+@@ -583,7 +567,6 @@ void CSudoku::Create(int nLevel)
+ 	{
+ 		for(bc=0; bc<m_nBlockColumns; bc++)
+ 		{
+-//			int nFields = m_nBlockSize - (int) (((float)nLevel/2.0+0.5) + (int)((float)(Rand() % nLevel) + 0.5));
+ 			int nFields = m_nBlockSize - nLevel + (Rand() % 2);
+ 			while(nFields > 0)
+ 			{
+@@ -596,7 +579,6 @@ void CSudoku::Create(int nLevel)
+ 				while(pSymbol->cSymbol != 0);
+ 
+ 				pSymbol->cSymbol	= pSymbol->cSolution;
+-//				pSymbol->bFixed		= false;
+ 				pSymbol->bFixed		= true;
+ 				nFields--;
+ 			}

@@ -1,0 +1,200 @@
+--- a/sudoku/board.cpp
++++ b/sudoku/board.cpp
+@@ -35,73 +35,73 @@ extern "C"
+ }
+ #endif
+ 
+-#define SCREEN_WIDTH										720
+-#define SCREEN_HEIGHT										576
+-#define SCREEN_BORDER										32
++#define SCREEN_WIDTH									720
++#define SCREEN_HEIGHT									576
++#define SCREEN_BORDER									32
+ 
+ #define PROGRESSBAR_WIDTH								100
+-#define PROGRESSBAR_HEIGHT							24
++#define PROGRESSBAR_HEIGHT							        24
+ #define PROGRESSBAR_LEFT								(SCREEN_WIDTH/2)-(PROGRESSBAR_WIDTH/2)
+ #define PROGRESSBAR_TOP									(SCREEN_HEIGHT/2)-(PROGRESSBAR_HEIGHT/2)
+ 
+-#define SCREEN_MINSIZE_PERC							30
++#define SCREEN_MINSIZE_PERC							        30
+ 
+-#define BLOCK_SPACE											2
+-#define FIELD_BORDER										2
++#define BLOCK_SPACE									2
++#define FIELD_BORDER									2
+ 
+ #define COLOR_BACKGROUND								BACKGROUND
+-#define COLOR_BORDER										STEELBLUE
+-#define COLOR_BORDER_HIGHLIGHTED				COLOR_BORDER
+-#define COLOR_TEXT											BLUE
++#define COLOR_BORDER									STEELBLUE
++#define COLOR_BORDER_HIGHLIGHTED				                        COLOR_BORDER
++#define COLOR_TEXT									BLUE
+ #define COLOR_TEXT_FIXED								BLACKBLACK
+-#define COLOR_TEXT_MISTAKE							RED
+-#define COLOR_TEXTBG										0
+-#define COLOR_FIELD_HIGHLIGHTED					WHITE
+-#define COLOR_FIELDBG										GLASS
++#define COLOR_TEXT_MISTAKE							        RED
++#define COLOR_TEXTBG									0
++#define COLOR_FIELD_HIGHLIGHTED					                        WHITE
++#define COLOR_FIELDBG									GLASS
+ #define COLOR_MESSAGEBOX								RED
+-#define COLOR_MESSAGEBOXBG							BLACKBLACK
++#define COLOR_MESSAGEBOXBG							        BLACKBLACK
+ 
+-#define TEXT_HEIGHT											64
++#define TEXT_HEIGHT									64
+ #define TEXT_HEIGHT_SMALL								32
+ 
+ #define CURSOR2COORDS(cursorx, cursory)	(cursorx / m_nBlockColumns), (cursory / m_nBlockRows), (cursorx % m_nFieldColumns), (cursory % m_nFieldRows)
+ 
+-#define MENU_CMD_EXIT										0
++#define MENU_CMD_EXIT									0
+ #define MENU_CMD_NEWGAME								1
+ #define MENU_CMD_LOADGAME								2
+ #define MENU_CMD_SAVEGAME								3
+-#define MENU_CMD_SHOW_MISTAKES					4
+-#define MENU_CMD_SHOW_SOLVABLE					5
+-#define MENU_CMD_BOARD_SIZE							6
++#define MENU_CMD_SHOW_MISTAKES					                        4
++#define MENU_CMD_SHOW_SOLVABLE					                        5
++#define MENU_CMD_BOARD_SIZE							        6
+ #define MENU_CMD_SHOW_TV								7
+ #define MENU_CMD_ABOUT									8
+ 
+-#define MENU_CAPTION										"Sudoku"
++#define MENU_CAPTION									"Sudoku"
+ #define MENU_TEXT_EXIT									"Exit"
+ #define	MENU_TEXT_NEWGAME								"Start new game (Level %d)"
+-#define	MENU_TEXT_LOADGAME							"Load board"
+-#define	MENU_TEXT_SAVEGAME							"Save board"
+-#define MENU_TEXT_SHOW_MISTAKES					"Show wrong fields on check: %s"
+-#define MENU_TEXT_SHOW_SOLVABLE					"Show if solvable on check: %s"
+-#define MENU_TEXT_BOARD_SIZE						"Change board size (%d%%)"
++#define	MENU_TEXT_LOADGAME							        "Load board"
++#define	MENU_TEXT_SAVEGAME							        "Save board"
++#define MENU_TEXT_SHOW_MISTAKES					                        "Show wrong fields on check: %s"
++#define MENU_TEXT_SHOW_SOLVABLE					                        "Show if solvable on check: %s"
++#define MENU_TEXT_BOARD_SIZE						                "Change board size (%d%%)"
+ #define MENU_TEXT_SHOW_TV								"Show TV: %s"
+ #define MENU_TEXT_ABOUT									"About"
+ 
+ #define TEXT_ABOUT "Sudoku v1.2\nby M. Schlosser\nemail: tuxbox@software-schlosser.de\nIn memory of Klaus K."
+ #define TEXT_PLEASEWAIT									"please wait..."
+ 
+-#define TEXT_ON													"on"
+-#define TEXT_OFF												"off"
++#define TEXT_ON										"on"
++#define TEXT_OFF									"off"
+ 
+-#define TEXT_RIGHT											"Right!"
+-#define TEXT_WRONG											"Wrong!"
+-#define TEXT_SOLVABLE										"Solvable"
++#define TEXT_RIGHT									"Right!"
++#define TEXT_WRONG									"Wrong!"
++#define TEXT_SOLVABLE									"Solvable"
+ #define TEXT_NOTSOLVABLE								"Not solvable!"
+ 
+ #define TEXTBOX_BORDER									128
+-#define TEXTBOX_X												300
+-#define TEXTBOX_Y												200
+-#define MSG_SLEEP												1000000
++#define TEXTBOX_X									300
++#define TEXTBOX_Y									200
++#define MSG_SLEEP									1000000
+ 
+ #define	RC_0			0
+ #define	RC_1			1
+@@ -416,24 +416,7 @@ void CBoard::SetCurrentSymbol(char cSymbol)
+ 	if(!pSymbol->bFixed)
+ 		pSymbol->cSymbol = cSymbol;
+ }
+-/*
+-#define MOVECURSOR(move)	{																																			\
+-		int nOldX = m_CursorX;																																			\
+-		int nOldY = m_CursorY;																																			\
+-		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER, COLOR_FIELDBG, DRAWBOARD_SHOW_DEFAULT);	\
+-		do																																													\
+-		{																																														\
+-			move;																																											\
+-			if(m_CursorX < 0)	m_CursorX = (m_mColumnLength-1);																				\
+-			if(m_CursorY < 0)	m_CursorY = (m_mRowLength-1);																						\
+-			if(m_CursorX >= m_mColumnLength)	m_CursorX = 0;																					\
+-			if(m_CursorY >= m_mRowLength)			m_CursorY = 0;																					\
+-			if(m_CursorX == nOldX && m_CursorY == nOldY) break;																				\
+-		}																																														\
+-		while(IsSymbolFixed(CURSOR2COORDS(m_CursorX, m_CursorY)));																	\
+-		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);	\
+-	}
+-*/
++
+ #define MOVECURSOR(move)	{															\
+ 		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER, COLOR_FIELDBG, DRAWBOARD_SHOW_DEFAULT);	\
+ 		move;																								\
+@@ -453,8 +436,6 @@ void CBoard::MoveCursor(void)
+ 	if(m_bShowMessageBox)
+ 	switch(actcode)
+ 	{
+-//		case RC_HOME:
+-//		case RC_OK:
+ 		case 0xEE:
+ 		break;
+ 		default:
+@@ -559,11 +540,6 @@ void CBoard::MoveCursor(void)
+ 			}
+ 		break;
+ 
+-//		case RC_HOME:
+-//		case RC_RED:
+-//		case RC_YELLOW:
+-//		case RC_GREEN:
+-//		case RC_SETUP:
+ 		case RC_BLUE:
+ 			m_bShowMenu = false;
+ 			DrawBoard(DRAWBOARD_SHOW_DEFAULT);
+@@ -588,15 +564,6 @@ void CBoard::MoveCursor(void)
+ 			MOVECURSOR(m_CursorY--);
+ 		break;
+ 
+-//		case RC_1:
+-//		case RC_2:
+-//		case RC_3:
+-//		case RC_4:
+-//		case RC_5:
+-//		case RC_6:
+-//		case RC_7:
+-//		case RC_8:
+-//		case RC_9:
+ 		case 1:
+ 		case 2:
+ 		case 3:
+@@ -610,7 +577,6 @@ void CBoard::MoveCursor(void)
+ 			DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);
+ 		break;
+ 
+-//		case RC_0:
+ 		case 0:
+ 			SetCurrentSymbol(0);
+ 			DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);
+@@ -654,10 +620,6 @@ void CBoard::MoveCursor(void)
+ 		}
+ 		break;
+ 
+-//		case RC_RED:
+-//		case RC_YELLOW:
+-//		case RC_GREEN:
+-//		case RC_SETUP:
+ 		case RC_BLUE:
+ 			m_bShowMenu = true;
+ 			MenuDraw(&m_Menu);
+@@ -732,7 +694,6 @@ void CBoard::Message(int x, int y, int dy, const char *pszMessage, int nColorTex
+ 
+ 	if(nLineCount > 1)
+ 	{
+-//		FBFillRect(x, y, nMaxStrLen*(dy/4), nLineCount*dy, nColorBg);
+ 		FBFillRect(TEXTBOX_BORDER, y, SCREEN_WIDTH-(2*TEXTBOX_BORDER), nLineCount*dy, nColorBg);
+ 	}
+ 

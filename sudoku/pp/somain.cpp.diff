@@ -1,0 +1,73 @@
+--- a/sudoku/somain.cpp
++++ b/sudoku/somain.cpp
+@@ -91,7 +91,6 @@ extern "C"
+ 	#include "rcinput.h"
+ 	
+ 	#include "pig.h"
+-//	#include <plugin.h>
+ }
+ 
+ #include "board.h"
+@@ -119,14 +118,6 @@ extern int debug;
+ void shutdown()
+ {
+ 	Sleep(300000);	// 300ms pause
+-/*
+-	realcode = RC_0;
+-	while(realcode != 0xEE)
+-	{
+-		RcGetActCode();
+-	}
+-*/
+-
+ 	RcClose();
+ 	FBClose();
+ }
+@@ -136,13 +127,15 @@ void shutdown()
+ // ----------------------------------------------------------------------------
+ int main( )
+ {
+-//	srand(time(NULL));
+ 
+ 	int fdfb = -1, fdrc = -1;
+-	if(FBInitialize(720, 576, 8, fdfb) < 0)
++	const int dx = 1280;
++	const int dy = 720;
++
++	if ( FBInitialize( dx, dy, 8, fdfb ) < 0 )
+ 		return -1;
+ 
+-	FBFillRect( 0, 0, 1400, 800, BNR0 );
++	FBFillRect( 0, 0, dx, dy, BNR0 );
+ 
+ 	if(RcInitialize(fdrc) < 0)
+ 		return -1;
+@@ -171,28 +164,4 @@ int main( )
+ 	shutdown();
+ 	return 0;
+ }
+-
+-//extern "C"
+-//{
+-//	// ----------------------------------------------------------------------------
+-//	// plugin_exec
+-//	// ----------------------------------------------------------------------------
+-//	int plugin_exec(PluginParam *par)
+-//	{
+-//		int fd_fb	= -1;
+-//		int fd_rc	= -1;
+-//		
+-//		for( ; par; par=par->next)
+-//		{
+-//			if(strcmp(par->id, P_ID_FBUFFER) == 0)
+-//				fd_fb				= _atoi(par->val);
+-//			else if(strcmp(par->id, P_ID_RCINPUT) == 0)
+-//				fd_rc				= _atoi(par->val);
+-//			else if(strcmp(par->id, P_ID_NOPIG) == 0)
+-//				fx2_use_pig	= !_atoi(par->val);
+-//		}
+-//
+-//		return main_exec(fd_fb, fd_rc, -1, NULL);
+-//	}
+-//}
+ #endif

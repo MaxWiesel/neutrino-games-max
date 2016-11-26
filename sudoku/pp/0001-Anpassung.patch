@@ -1,0 +1,501 @@
+From 2a5788ab66605a13d55b3ef06c7c0d97088204c3 Mon Sep 17 00:00:00 2001
+From: "M. Liebmann" <tuxcode.bbg@gmail.com>
+Date: Mon, 4 Apr 2016 16:31:28 +0200
+Subject: [PATCH] Anpassung
+
+---
+ sudoku/board.cpp  | 109 ++++++++++++++++++------------------------------------
+ sudoku/colors.h   |  12 +++---
+ sudoku/somain.cpp |  41 +++-----------------
+ sudoku/sudoku.cfg |   8 +---
+ sudoku/sudoku.cpp |  18 ---------
+ sudoku/sudoku.h   |  76 ++++++++++++++++++-------------------
+ 6 files changed, 86 insertions(+), 178 deletions(-)
+
+diff --git a/sudoku/board.cpp b/sudoku/board.cpp
+index 3b5d0aa..96e1cf7 100644
+--- a/sudoku/board.cpp
++++ b/sudoku/board.cpp
+@@ -35,73 +35,73 @@ extern "C"
+ }
+ #endif
+ 
+-#define SCREEN_WIDTH										720
+-#define SCREEN_HEIGHT										576
+-#define SCREEN_BORDER										32
++#define SCREEN_WIDTH									720
++#define SCREEN_HEIGHT									576
++#define SCREEN_BORDER									32
+ 
+ #define PROGRESSBAR_WIDTH								100
+-#define PROGRESSBAR_HEIGHT							24
++#define PROGRESSBAR_HEIGHT							        24
+ #define PROGRESSBAR_LEFT								(SCREEN_WIDTH/2)-(PROGRESSBAR_WIDTH/2)
+ #define PROGRESSBAR_TOP									(SCREEN_HEIGHT/2)-(PROGRESSBAR_HEIGHT/2)
+ 
+-#define SCREEN_MINSIZE_PERC							30
++#define SCREEN_MINSIZE_PERC							        30
+ 
+-#define BLOCK_SPACE											2
+-#define FIELD_BORDER										2
++#define BLOCK_SPACE									2
++#define FIELD_BORDER									2
+ 
+ #define COLOR_BACKGROUND								BACKGROUND
+-#define COLOR_BORDER										STEELBLUE
+-#define COLOR_BORDER_HIGHLIGHTED				COLOR_BORDER
+-#define COLOR_TEXT											BLUE
++#define COLOR_BORDER									STEELBLUE
++#define COLOR_BORDER_HIGHLIGHTED				                        COLOR_BORDER
++#define COLOR_TEXT									BLUE
+ #define COLOR_TEXT_FIXED								BLACKBLACK
+-#define COLOR_TEXT_MISTAKE							RED
+-#define COLOR_TEXTBG										0
+-#define COLOR_FIELD_HIGHLIGHTED					WHITE
+-#define COLOR_FIELDBG										GLASS
++#define COLOR_TEXT_MISTAKE							        RED
++#define COLOR_TEXTBG									0
++#define COLOR_FIELD_HIGHLIGHTED					                        WHITE
++#define COLOR_FIELDBG									GLASS
+ #define COLOR_MESSAGEBOX								RED
+-#define COLOR_MESSAGEBOXBG							BLACKBLACK
++#define COLOR_MESSAGEBOXBG							        BLACKBLACK
+ 
+-#define TEXT_HEIGHT											64
++#define TEXT_HEIGHT									64
+ #define TEXT_HEIGHT_SMALL								32
+ 
+ #define CURSOR2COORDS(cursorx, cursory)	(cursorx / m_nBlockColumns), (cursory / m_nBlockRows), (cursorx % m_nFieldColumns), (cursory % m_nFieldRows)
+ 
+-#define MENU_CMD_EXIT										0
++#define MENU_CMD_EXIT									0
+ #define MENU_CMD_NEWGAME								1
+ #define MENU_CMD_LOADGAME								2
+ #define MENU_CMD_SAVEGAME								3
+-#define MENU_CMD_SHOW_MISTAKES					4
+-#define MENU_CMD_SHOW_SOLVABLE					5
+-#define MENU_CMD_BOARD_SIZE							6
++#define MENU_CMD_SHOW_MISTAKES					                        4
++#define MENU_CMD_SHOW_SOLVABLE					                        5
++#define MENU_CMD_BOARD_SIZE							        6
+ #define MENU_CMD_SHOW_TV								7
+ #define MENU_CMD_ABOUT									8
+ 
+-#define MENU_CAPTION										"Sudoku"
++#define MENU_CAPTION									"Sudoku"
+ #define MENU_TEXT_EXIT									"Exit"
+ #define	MENU_TEXT_NEWGAME								"Start new game (Level %d)"
+-#define	MENU_TEXT_LOADGAME							"Load board"
+-#define	MENU_TEXT_SAVEGAME							"Save board"
+-#define MENU_TEXT_SHOW_MISTAKES					"Show wrong fields on check: %s"
+-#define MENU_TEXT_SHOW_SOLVABLE					"Show if solvable on check: %s"
+-#define MENU_TEXT_BOARD_SIZE						"Change board size (%d%%)"
++#define	MENU_TEXT_LOADGAME							        "Load board"
++#define	MENU_TEXT_SAVEGAME							        "Save board"
++#define MENU_TEXT_SHOW_MISTAKES					                        "Show wrong fields on check: %s"
++#define MENU_TEXT_SHOW_SOLVABLE					                        "Show if solvable on check: %s"
++#define MENU_TEXT_BOARD_SIZE						                "Change board size (%d%%)"
+ #define MENU_TEXT_SHOW_TV								"Show TV: %s"
+ #define MENU_TEXT_ABOUT									"About"
+ 
+ #define TEXT_ABOUT "Sudoku v1.2\nby M. Schlosser\nemail: tuxbox@software-schlosser.de\nIn memory of Klaus K."
+ #define TEXT_PLEASEWAIT									"please wait..."
+ 
+-#define TEXT_ON													"on"
+-#define TEXT_OFF												"off"
++#define TEXT_ON										"on"
++#define TEXT_OFF									"off"
+ 
+-#define TEXT_RIGHT											"Right!"
+-#define TEXT_WRONG											"Wrong!"
+-#define TEXT_SOLVABLE										"Solvable"
++#define TEXT_RIGHT									"Right!"
++#define TEXT_WRONG									"Wrong!"
++#define TEXT_SOLVABLE									"Solvable"
+ #define TEXT_NOTSOLVABLE								"Not solvable!"
+ 
+ #define TEXTBOX_BORDER									128
+-#define TEXTBOX_X												300
+-#define TEXTBOX_Y												200
+-#define MSG_SLEEP												1000000
++#define TEXTBOX_X									300
++#define TEXTBOX_Y									200
++#define MSG_SLEEP									1000000
+ 
+ #define	RC_0			0
+ #define	RC_1			1
+@@ -416,24 +416,7 @@ void CBoard::SetCurrentSymbol(char cSymbol)
+ 	if(!pSymbol->bFixed)
+ 		pSymbol->cSymbol = cSymbol;
+ }
+-/*
+-#define MOVECURSOR(move)	{																																			\
+-		int nOldX = m_CursorX;																																			\
+-		int nOldY = m_CursorY;																																			\
+-		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER, COLOR_FIELDBG, DRAWBOARD_SHOW_DEFAULT);	\
+-		do																																													\
+-		{																																														\
+-			move;																																											\
+-			if(m_CursorX < 0)	m_CursorX = (m_mColumnLength-1);																				\
+-			if(m_CursorY < 0)	m_CursorY = (m_mRowLength-1);																						\
+-			if(m_CursorX >= m_mColumnLength)	m_CursorX = 0;																					\
+-			if(m_CursorY >= m_mRowLength)			m_CursorY = 0;																					\
+-			if(m_CursorX == nOldX && m_CursorY == nOldY) break;																				\
+-		}																																														\
+-		while(IsSymbolFixed(CURSOR2COORDS(m_CursorX, m_CursorY)));																	\
+-		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);	\
+-	}
+-*/
++
+ #define MOVECURSOR(move)	{															\
+ 		DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER, COLOR_FIELDBG, DRAWBOARD_SHOW_DEFAULT);	\
+ 		move;																								\
+@@ -453,8 +436,6 @@ void CBoard::MoveCursor(void)
+ 	if(m_bShowMessageBox)
+ 	switch(actcode)
+ 	{
+-//		case RC_HOME:
+-//		case RC_OK:
+ 		case 0xEE:
+ 		break;
+ 		default:
+@@ -559,11 +540,6 @@ void CBoard::MoveCursor(void)
+ 			}
+ 		break;
+ 
+-//		case RC_HOME:
+-//		case RC_RED:
+-//		case RC_YELLOW:
+-//		case RC_GREEN:
+-//		case RC_SETUP:
+ 		case RC_BLUE:
+ 			m_bShowMenu = false;
+ 			DrawBoard(DRAWBOARD_SHOW_DEFAULT);
+@@ -588,15 +564,6 @@ void CBoard::MoveCursor(void)
+ 			MOVECURSOR(m_CursorY--);
+ 		break;
+ 
+-//		case RC_1:
+-//		case RC_2:
+-//		case RC_3:
+-//		case RC_4:
+-//		case RC_5:
+-//		case RC_6:
+-//		case RC_7:
+-//		case RC_8:
+-//		case RC_9:
+ 		case 1:
+ 		case 2:
+ 		case 3:
+@@ -610,7 +577,6 @@ void CBoard::MoveCursor(void)
+ 			DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);
+ 		break;
+ 
+-//		case RC_0:
+ 		case 0:
+ 			SetCurrentSymbol(0);
+ 			DrawField(CURSOR2COORDS(m_CursorX, m_CursorY), COLOR_BORDER_HIGHLIGHTED, COLOR_FIELD_HIGHLIGHTED, DRAWBOARD_SHOW_DEFAULT);
+@@ -654,10 +620,6 @@ void CBoard::MoveCursor(void)
+ 		}
+ 		break;
+ 
+-//		case RC_RED:
+-//		case RC_YELLOW:
+-//		case RC_GREEN:
+-//		case RC_SETUP:
+ 		case RC_BLUE:
+ 			m_bShowMenu = true;
+ 			MenuDraw(&m_Menu);
+@@ -732,7 +694,6 @@ void CBoard::Message(int x, int y, int dy, const char *pszMessage, int nColorTex
+ 
+ 	if(nLineCount > 1)
+ 	{
+-//		FBFillRect(x, y, nMaxStrLen*(dy/4), nLineCount*dy, nColorBg);
+ 		FBFillRect(TEXTBOX_BORDER, y, SCREEN_WIDTH-(2*TEXTBOX_BORDER), nLineCount*dy, nColorBg);
+ 	}
+ 
+diff --git a/sudoku/colors.h b/sudoku/colors.h
+index a14eda1..3e90189 100644
+--- a/sudoku/colors.h
++++ b/sudoku/colors.h
+@@ -22,14 +22,14 @@
+ #ifndef _COLORS_H
+ #define _COLORS_H
+ 
+-#define	YELLOW			4
+-#define	GREEN				5
+-#define	STEELBLUE		6
+-#define	BLUE				7
+-#define	GRAY				8
++#define	YELLOW		4
++#define	GREEN		5
++#define	STEELBLUE	6
++#define	BLUE		7
++#define	GRAY		8
+ #define BLACKBLACK	9
+ 
+-#define GLASS				10
++#define GLASS		10
+ #define BACKGROUND	11
+ 
+ #endif // _COLORS_H
+diff --git a/sudoku/somain.cpp b/sudoku/somain.cpp
+index 1cad153..9f48f8b 100644
+--- a/sudoku/somain.cpp
++++ b/sudoku/somain.cpp
+@@ -91,7 +91,6 @@ extern "C"
+ 	#include "rcinput.h"
+ 	
+ 	#include "pig.h"
+-//	#include <plugin.h>
+ }
+ 
+ #include "board.h"
+@@ -119,14 +118,6 @@ extern int debug;
+ void shutdown()
+ {
+ 	Sleep(300000);	// 300ms pause
+-/*
+-	realcode = RC_0;
+-	while(realcode != 0xEE)
+-	{
+-		RcGetActCode();
+-	}
+-*/
+-
+ 	RcClose();
+ 	FBClose();
+ }
+@@ -136,13 +127,15 @@ void shutdown()
+ // ----------------------------------------------------------------------------
+ int main( )
+ {
+-//	srand(time(NULL));
+ 
+ 	int fdfb = -1, fdrc = -1;
+-	if(FBInitialize(720, 576, 8, fdfb) < 0)
++	const int dx = 1280;
++	const int dy = 720;
++
++	if ( FBInitialize( dx, dy, 8, fdfb ) < 0 )
+ 		return -1;
+ 
+-	FBFillRect( 0, 0, 1400, 800, BNR0 );
++	FBFillRect( 0, 0, dx, dy, BNR0 );
+ 
+ 	if(RcInitialize(fdrc) < 0)
+ 		return -1;
+@@ -171,28 +164,4 @@ int main( )
+ 	shutdown();
+ 	return 0;
+ }
+-
+-//extern "C"
+-//{
+-//	// ----------------------------------------------------------------------------
+-//	// plugin_exec
+-//	// ----------------------------------------------------------------------------
+-//	int plugin_exec(PluginParam *par)
+-//	{
+-//		int fd_fb	= -1;
+-//		int fd_rc	= -1;
+-//		
+-//		for( ; par; par=par->next)
+-//		{
+-//			if(strcmp(par->id, P_ID_FBUFFER) == 0)
+-//				fd_fb				= _atoi(par->val);
+-//			else if(strcmp(par->id, P_ID_RCINPUT) == 0)
+-//				fd_rc				= _atoi(par->val);
+-//			else if(strcmp(par->id, P_ID_NOPIG) == 0)
+-//				fx2_use_pig	= !_atoi(par->val);
+-//		}
+-//
+-//		return main_exec(fd_fb, fd_rc, -1, NULL);
+-//	}
+-//}
+ #endif
+diff --git a/sudoku/sudoku.cfg b/sudoku/sudoku.cfg
+index 8fd4a26..18d7cb0 100644
+--- a/sudoku/sudoku.cfg
++++ b/sudoku/sudoku.cfg
+@@ -1,7 +1,3 @@
+-type=1
+ name=Sudoku
+-desc=Sudoku
+-needfb=1
+-needrc=1
+-needlcd=0
+-needoffsets=0
++desc=Fülle die leeren Kästchen mit den richtigen Zahlen.
++type=1
+diff --git a/sudoku/sudoku.cpp b/sudoku/sudoku.cpp
+index afc4e98..4ee70c9 100644
+--- a/sudoku/sudoku.cpp
++++ b/sudoku/sudoku.cpp
+@@ -19,7 +19,6 @@
+ 	If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include <config.h>
+ #include "sudoku.h"
+ 
+ #include <stdio.h>
+@@ -471,22 +470,10 @@ int CSudoku::Solve(int nIndex, bool bCountSolutions)
+ 	if(m_nCount1 > MAX_SOLVE_CALLS)
+ 		return 0;
+ 
+-	// array index to coords
+-//	int nBlockIdx, nBlockRow, nBlockCol, nFieldIdx, nFieldRow, nFieldCol;
+-
+ 	// find next unsolved field
+ 	tSymbol *pSymbol;
+ 	while(1)
+ 	{
+-//		nBlockIdx = nIndex / m_nBlockSize;
+-//		nBlockRow = nBlockIdx % m_nBlockColumns;
+-//		nBlockCol = nBlockIdx / 3;
+-//		nFieldIdx = nIndex - (nBlockIdx * m_nBlockSize);
+-//		nFieldRow = nFieldIdx % m_nFieldColumns;
+-//		nFieldCol = nFieldIdx / m_nFieldColumns;
+-
+-//		pSymbol = GetSymbol(nBlockCol, nBlockRow, nFieldCol, nFieldRow);
+-//		pSymbol = GetSymbol(m_pnBlockColIndexLookup[nIndex], m_pnBlockRowIndexLookup[nIndex], m_pnFieldColIndexLookup[nIndex], m_pnFieldRowIndexLookup[nIndex]);
+ 		pSymbol = GetSymbol(nIndex);
+ 
+ 		if(pSymbol->cSolution != 0)
+@@ -511,9 +498,6 @@ int CSudoku::Solve(int nIndex, bool bCountSolutions)
+ 	for(i=0; i<m_nSymbolsCount; i++)
+ 	{
+ 		// check if this symbol keeps the rules in that field
+-//		if(	CheckCol(nBlockRow, nFieldRow, m_pszSymbols[i])	== 0	&&
+-//				CheckRow(nBlockCol, nFieldCol, m_pszSymbols[i])	== 0	&&
+-//				CheckBlock(nBlockCol, nBlockRow, m_pszSymbols[i])	== 0)
+ 		if(	CheckCol(m_pnBlockRowIndexLookup[nIndex], m_pnFieldRowIndexLookup[nIndex], m_pszSymbols[i])	== 0	&&
+ 				CheckRow(m_pnBlockColIndexLookup[nIndex], m_pnFieldColIndexLookup[nIndex], m_pszSymbols[i])	== 0	&&
+ 				CheckBlock(m_pnBlockColIndexLookup[nIndex], m_pnBlockRowIndexLookup[nIndex], m_pszSymbols[i])	== 0)
+@@ -583,7 +567,6 @@ void CSudoku::Create(int nLevel)
+ 	{
+ 		for(bc=0; bc<m_nBlockColumns; bc++)
+ 		{
+-//			int nFields = m_nBlockSize - (int) (((float)nLevel/2.0+0.5) + (int)((float)(Rand() % nLevel) + 0.5));
+ 			int nFields = m_nBlockSize - nLevel + (Rand() % 2);
+ 			while(nFields > 0)
+ 			{
+@@ -596,7 +579,6 @@ void CSudoku::Create(int nLevel)
+ 				while(pSymbol->cSymbol != 0);
+ 
+ 				pSymbol->cSymbol	= pSymbol->cSolution;
+-//				pSymbol->bFixed		= false;
+ 				pSymbol->bFixed		= true;
+ 				nFields--;
+ 			}
+diff --git a/sudoku/sudoku.h b/sudoku/sudoku.h
+index dcb336a..f225492 100644
+--- a/sudoku/sudoku.h
++++ b/sudoku/sudoku.h
+@@ -46,64 +46,64 @@ public:
+ 	virtual ~CSudoku();
+ 
+ public:
+-	void								Init();
+-	void								Shutdown(bool bKeepSymbols = false);
+-	void								SetSymbols(const char *pszSymbols);
++	void							Init();
++	void							Shutdown(bool bKeepSymbols = false);
++	void							SetSymbols(const char *pszSymbols);
+ 	tSymbol							*GetSymbol(int nBlockCol, int nBlockRow, int nFieldCol, int nFieldRow);
+ 	tSymbol							*GetSymbol(int nIndex);
+-	bool								IsSymbolFixed(int nBlockCol, int nBlockRow, int nFieldCol, int nFieldRow);
+-	int									CheckBlock(int nBlockCol, int nBlockRow, char cSymbol);
+-	int									CheckCol(int nBlockRow, int nFieldRow, char cSymbol);
+-	int									CheckRow(int nBlockCol, int nFieldCol, char cSymbol);
+-	int									CheckBlockAll(int nBlockCol, int nBlockRow);
+-	int									CheckColAll(int nBlockRow, int nFieldRow);
+-	int									CheckRowAll(int nBlockCol, int nFieldCol);
+-	int									CheckBoard(void);
+-
+-	int									GetSolutionsCount();
+-	int									Solve(bool bCountSolutions = false);
+-	void								Create(int nLevel);
+-
+-	int									LoadGame(const char *pszFile);
+-	int									SaveGame(const char *pszFile);
++	bool							IsSymbolFixed(int nBlockCol, int nBlockRow, int nFieldCol, int nFieldRow);
++	int							CheckBlock(int nBlockCol, int nBlockRow, char cSymbol);
++	int							CheckCol(int nBlockRow, int nFieldRow, char cSymbol);
++	int							CheckRow(int nBlockCol, int nFieldCol, char cSymbol);
++	int							CheckBlockAll(int nBlockCol, int nBlockRow);
++	int							CheckColAll(int nBlockRow, int nFieldRow);
++	int							CheckRowAll(int nBlockCol, int nFieldCol);
++	int							CheckBoard(void);
++
++	int							GetSolutionsCount();
++	int							Solve(bool bCountSolutions = false);
++	void							Create(int nLevel);
++
++	int							LoadGame(const char *pszFile);
++	int							SaveGame(const char *pszFile);
+ 
+ private:
+-	int									Create();
+-	int									Solve(int nIndex, bool bCountSolutions = false);
++	int							Create();
++	int							Solve(int nIndex, bool bCountSolutions = false);
+ 
+ protected:	// overridables
+-	virtual void				CallbackCreate(unsigned long nValue) {};
++	virtual void				                CallbackCreate(unsigned long nValue) {};
+ 
+ private:
+ 	tSymbol							*m_Board;
+ 	tSymbol							*m_TempBoard;
+-	char								*m_pszSymbols;
++	char							*m_pszSymbols;
+ 
+-	int									m_nSolutionsCount;
++	int							m_nSolutionsCount;
+ 
+ public:	// board settings
+-	int									m_nBlockColumns;
+-	int									m_nBlockRows;
+-	int									m_nFieldColumns;
+-	int									m_nFieldRows;
++	int							m_nBlockColumns;
++	int							m_nBlockRows;
++	int							m_nFieldColumns;
++	int							m_nFieldRows;
+ 
+ private:	// pre calculated numbers (optimizations)
+ 	size_t							m_nSymbolsCount;
+-	int									m_nFieldsCount;
+-	int									m_nBlockSize;
+-	int									m_nBlockRowsSize;
++	int							m_nFieldsCount;
++	int							m_nBlockSize;
++	int							m_nBlockRowsSize;
+ 
+-	int									**m_pnBlockLookup;
+-	int									*m_pnFieldRowLookup;
++	int							**m_pnBlockLookup;
++	int							*m_pnFieldRowLookup;
+ 
+-	int									*m_pnBlockColIndexLookup;
+-	int									*m_pnBlockRowIndexLookup;
+-	int									*m_pnFieldColIndexLookup;
+-	int									*m_pnFieldRowIndexLookup;
++	int							*m_pnBlockColIndexLookup;
++	int							*m_pnBlockRowIndexLookup;
++	int							*m_pnFieldColIndexLookup;
++	int							*m_pnFieldRowIndexLookup;
+ 
+ private:	// function call counters
+-	unsigned long				m_nCount1;
+-	unsigned long				m_nCount2;
++	unsigned long				                m_nCount1;
++	unsigned long				                m_nCount2;
+ };
+ 
+ #endif // _SUDOKU_H
+-- 
+2.7.1
+
