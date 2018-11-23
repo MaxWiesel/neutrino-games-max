@@ -122,7 +122,11 @@ int	RcInitialize( int extfd )
 	char	buf[32];
 	if ( extfd == -1 ) {
 		fd_is_ext = 0;
+#ifdef HAVE_ARM_HARDWARE
+		fd = open("/dev/input/event1", O_RDONLY );
+#else
 		fd = open("/dev/input/nevis_ir", O_RDONLY );
+#endif
 		if ( fd == -1 )
 			return kbfd;
 		fcntl(fd, F_SETFL, O_NONBLOCK );
